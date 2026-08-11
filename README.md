@@ -1,4 +1,4 @@
-# John
+## John
 
 AI chat interface for John — an AI assistant trained by Anaxonic, served at [john.quantumclub.sh](https://john.quantumclub.sh).
 
