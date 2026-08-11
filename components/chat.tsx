@@ -1,6 +1,6 @@
 "use client"
 
-import { useChat } from "ai/react"
+import { useChat } from "@ai-sdk/react"
 import { useEffect, useRef } from "react"
 import { Icon } from "@iconify/react"
 import { Message } from "@/components/message"
