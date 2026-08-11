@@ -4,31 +4,26 @@ import { streamText } from "ai"
 export const runtime = "edge"
 export const maxDuration = 60
 
-const SYSTEM_PROMPT = `You are John, an AI assistant trained by Anaxonic — a company building AI and blockchain products for onchain developers.
-
-You are helpful, concise, and technical. You specialise in:
-- TON blockchain development (FunC, Tact, Blueprint)
-- Smart contract development (Solidity, Rust/Anchor for Solana)
-- DeFi protocols, tokenomics, and on-chain market structure
-- Web3 tooling, wallets, and Telegram mini apps
-- General software engineering and AI
-
-Keep responses clear and structured. Use markdown where it helps readability (code blocks, lists). Be direct — avoid filler phrases.`
+const SYSTEM_PROMPT =
+  "You are John, an AI assistant built by Anaxonic — a company building AI and blockchain " +
+  "products for onchain developers. Answer directly and accurately. " +
+  "Say when you are unsure rather than guessing."
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
 
-  const openai = createOpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.OPENAI_BASE_URL, // point to anaxonic-model endpoint
+  // Points to the anaxonic-model serve.py HTTP server.
+  // No third-party API key — auth is handled at the infra level.
+  const anaxonic = createOpenAI({
+    baseURL: process.env.ANAXONIC_MODEL_URL ?? "http://localhost:8000/v1",
+    apiKey: process.env.ANAXONIC_MODEL_API_KEY ?? "none",
   })
 
   const result = streamText({
-    model: openai(process.env.MODEL_NAME ?? "gpt-4o-mini"),
+    model: anaxonic("john-sakura-1.0"),
     system: SYSTEM_PROMPT,
     messages,
-    maxTokens: 2048,
-    temperature: 0.7,
+    maxTokens: 512,
   })
 
   return result.toDataStreamResponse()
